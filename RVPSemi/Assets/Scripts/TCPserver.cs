@@ -8,7 +8,7 @@ using System.Threading;
 using UnityEngine;  
 
 public class TCPserver : MonoBehaviour {  	
-	public GameObject pendulum;
+	public InvertedPendulum pendulum;
 	#region private members 	
 	/// <summary> 	
 	/// TCPListener to listen for incomming TCP connection 	
@@ -32,7 +32,7 @@ public class TCPserver : MonoBehaviour {
 		tcpListenerThread.IsBackground = true; 		
 		tcpListenerThread.Start(); 	
 
-		InvokeRepeating("SendMessage", 1.0f, 0.1f);
+		InvokeRepeating("SendMessage", 1.0f, 0.05f);
 	}  	
 
 	// Update is called once per frame
@@ -60,8 +60,9 @@ public class TCPserver : MonoBehaviour {
 							var incommingData = new byte[length]; 							
 							Array.Copy(bytes, 0, incommingData, 0, length);  							
 							// Convert byte array to string message. 							
-							string clientMessage = Encoding.ASCII.GetString(incommingData); 							
-							Debug.Log("client message received as: " + clientMessage); 						
+							string clientMessage = Encoding.ASCII.GetString(incommingData); 	
+							float command = float.Parse(clientMessage);
+							pendulum.SetForce(command);
 						} 					
 					} 				
 				} 			
@@ -83,12 +84,11 @@ public class TCPserver : MonoBehaviour {
 			// Get a stream object for writing. 			
 			NetworkStream stream = connectedTcpClient.GetStream(); 			
 			if (stream.CanWrite) {                 
-				string serverMessage = "Pendulum position = " + pendulum.transform.position.x; 			
+				string serverMessage = String.Format("{0}", pendulum.pendulum.transform.localEulerAngles.y); 			
 				// Convert string message to byte array.                 
 				byte[] serverMessageAsByteArray = Encoding.ASCII.GetBytes(serverMessage); 				
 				// Write byte array to socketConnection stream.               
 				stream.Write(serverMessageAsByteArray, 0, serverMessageAsByteArray.Length);               
-				Debug.Log("Server sent his message - should be received by client");      
 				stream.Flush();
 			}       
 		} 		

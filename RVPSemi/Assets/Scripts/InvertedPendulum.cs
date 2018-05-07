@@ -8,18 +8,18 @@ public class InvertedPendulum : MonoBehaviour {
 	public GameObject pendulum;
 	public GameObject cart;
 
-	float poleLength = 0.5f;
+	float poleLength = 1.0f;
 	public float poleTheta;
 	float poleThetaDot = 0f;
 	float poleThetaDotDot = 0f;
-	float pendulumMass = 0.2f;
+	float pendulumMass = 1.0f;
 
 	float cartX;
 	float cartXDot = 0f;
 	float cartXDotDot = 0f;
-	float cartMass = 1f;
+	float cartMass = 1.0f;
 	float cartForce = 0f;
-	float cartMu = 1f;
+	float cartMu = 2f;
 
 	// Use this for initialization
 	void Start () {

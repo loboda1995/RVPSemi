@@ -51,6 +51,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\GraphCart.cs" />
+     <Compile Include="Assets\Scripts\GraphForce.cs" />
+     <Compile Include="Assets\Scripts\Graphs.cs" />
+     <Compile Include="Assets\Scripts\GraphTheta.cs" />
      <Compile Include="Assets\Scripts\InvertedPendulum.cs" />
      <Compile Include="Assets\Scripts\Settings.cs" />
      <Compile Include="Assets\Scripts\TCPserver.cs" />

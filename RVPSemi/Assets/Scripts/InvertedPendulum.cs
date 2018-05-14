@@ -8,6 +8,10 @@ public class InvertedPendulum : MonoBehaviour {
 	public GameObject pendulum;
 	public GameObject cart;
 
+	public GameObject rod;
+	public GameObject weightPos;
+	public GameObject weight;
+
 	float poleLength;
 	public float poleTheta;
 	float poleThetaDot = 0f;
@@ -18,8 +22,8 @@ public class InvertedPendulum : MonoBehaviour {
 	float cartXDot = 0f;
 	float cartXDotDot = 0f;
 	float cartMass;
-	float cartForce = 0f;
-	float cartMu = 5f;
+	public float cartForce = 0f;
+	float cartMu = 2f;
 
 	float startX = 0f;
 	float startTheta = 20f;
@@ -37,23 +41,21 @@ public class InvertedPendulum : MonoBehaviour {
 
 		pendulum.transform.localRotation = Quaternion.Euler(pendulum.transform.localRotation.x, startTheta, pendulum.transform.localRotation.z);
 		cart.transform.position = new Vector3(cartX, cart.transform.position.y, cart.transform.position.z);
+		rod.transform.localScale = new Vector3 (1, 1, poleLength);
+		weight.transform.position = weightPos.transform.position;
+		weight.transform.localScale = new Vector3 (Mathf.Sqrt(pendulumMass), Mathf.Sqrt(pendulumMass), Mathf.Sqrt(pendulumMass));
 	}
 
 	// Update is called once per frame
 	void Update () {
 		float delta = Time.deltaTime;
-		/*cartForce = 0f;
-		if (Input.GetKey (KeyCode.LeftArrow))
-			cartForce = -10f;
-		if (Input.GetKey (KeyCode.RightArrow))
-			cartForce = 10f;*/
 
 		float cosTheta = Mathf.Cos(poleTheta);
 		float sinTheta = Mathf.Sin(poleTheta);
 		float totalMass = cartMass + pendulumMass;
 		float massLength = pendulumMass * poleLength;
 
-		poleThetaDotDot = (Physics.gravity.y * totalMass * sinTheta + cosTheta * (cartForce - massLength * Mathf.Pow(poleThetaDot, 2) * sinTheta - cartMu * cartXDot));
+		poleThetaDotDot = (Physics.gravity.y * totalMass * sinTheta + cosTheta * (cartForce - massLength * Mathf.Pow(poleThetaDot, 2) * sinTheta - cartMu * cartXDot)) / (poleLength * (totalMass - pendulumMass * Mathf.Pow(cosTheta, 2)));
 		cartXDotDot = (cartForce + massLength * (poleThetaDotDot * cosTheta - Mathf.Pow(poleThetaDot, 2) * sinTheta) - cartMu * cartXDot) / totalMass;
 
 		cartXDot = cartXDot + delta * cartXDotDot;
@@ -93,6 +95,10 @@ public class InvertedPendulum : MonoBehaviour {
 		cartMass = startCartWeight;
 		pendulum.transform.localRotation = Quaternion.Euler(pendulum.transform.localRotation.x, startTheta, pendulum.transform.localRotation.z);
 		cart.transform.position = new Vector3(cartX, cart.transform.position.y, cart.transform.position.z);
+		rod.transform.localScale = new Vector3 (1, 1, poleLength);
+		weight.transform.position = weightPos.transform.position;
+		weight.transform.localScale = new Vector3 (Mathf.Sqrt(pendulumMass), Mathf.Sqrt(pendulumMass), Mathf.Sqrt(pendulumMass));
+
 		cartXDot = 0f;
 		cartXDotDot = 0f;
 		poleThetaDot = 0f;

@@ -18,7 +18,7 @@ public class TCPClient {
             float e = theta < 180 ? theta : theta - 360;
             System.out.println(e);
 
-            pw.printf("%f", e * 0.3);
+            pw.printf("%f", e * 0.4);
             pw.flush();
         }
         clientSocket.close();

@@ -32,7 +32,7 @@ public class TCPserver : MonoBehaviour {
 		tcpListenerThread.IsBackground = true; 		
 		tcpListenerThread.Start(); 	
 
-		InvokeRepeating("SendMessage", 1.0f, 0.05f);
+		InvokeRepeating("SendMessage", 1.0f, 0.01f);
 	}  	
 
 	// Update is called once per frame
@@ -49,7 +49,7 @@ public class TCPserver : MonoBehaviour {
 			tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), 8052); 			
 			tcpListener.Start();              
 			Debug.Log("Server is listening");              
-			Byte[] bytes = new Byte[1024];  			
+			Byte[] bytes = new Byte[64];  			
 			while (true) { 				
 				using (connectedTcpClient = tcpListener.AcceptTcpClient()) { 					
 					// Get a stream object for reading 					
@@ -75,6 +75,8 @@ public class TCPserver : MonoBehaviour {
 	/// <summary> 	
 	/// Send message to client using socket connection. 	
 	/// </summary> 	
+
+	private byte[] serverMessageAsByteArray;
 	private void SendMessage() { 		
 		if (connectedTcpClient == null) {             
 			return;         
@@ -83,10 +85,14 @@ public class TCPserver : MonoBehaviour {
 		try { 			
 			// Get a stream object for writing. 			
 			NetworkStream stream = connectedTcpClient.GetStream(); 			
-			if (stream.CanWrite) {                 
-				string serverMessage = String.Format("{0}", pendulum.pendulum.transform.localEulerAngles.y); 			
+			if (stream.CanWrite) {         
+				float e = pendulum.pendulum.transform.localEulerAngles.y;
+				if (e > 180f)
+					e = e - 360f;
+				e = e * Mathf.Deg2Rad;
+				string serverMessage = String.Format("{0};", e); 			
 				// Convert string message to byte array.                 
-				byte[] serverMessageAsByteArray = Encoding.ASCII.GetBytes(serverMessage); 				
+				serverMessageAsByteArray = Encoding.ASCII.GetBytes(serverMessage); 				
 				// Write byte array to socketConnection stream.               
 				stream.Write(serverMessageAsByteArray, 0, serverMessageAsByteArray.Length);               
 				stream.Flush();

@@ -7,6 +7,8 @@ public class InvertedPendulum : MonoBehaviour {
 
 	public GameObject pendulum;
 	public GameObject cart;
+	public GameObject wheel1;
+	public GameObject wheel2;
 
 	public GameObject rod;
 	public GameObject weightPos;
@@ -26,10 +28,10 @@ public class InvertedPendulum : MonoBehaviour {
 	float cartMu = 2f;
 
 	float startX = 0f;
-	float startTheta = 20f;
-	float startPoleLength = 1.0f;
-	float startPoleWeight = 1.0f;
-	float startCartWeight = 2.0f;
+	float startTheta = 180;
+	float startPoleLength = 2.0f;
+	float startPoleWeight = 0.5f;
+	float startCartWeight = 5.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -55,6 +57,7 @@ public class InvertedPendulum : MonoBehaviour {
 		float totalMass = cartMass + pendulumMass;
 		float massLength = pendulumMass * poleLength;
 
+
 		poleThetaDotDot = (Physics.gravity.y * totalMass * sinTheta + cosTheta * (cartForce - massLength * Mathf.Pow(poleThetaDot, 2) * sinTheta - cartMu * cartXDot)) / (poleLength * (totalMass - pendulumMass * Mathf.Pow(cosTheta, 2)));
 		cartXDotDot = (cartForce + massLength * (poleThetaDotDot * cosTheta - Mathf.Pow(poleThetaDot, 2) * sinTheta) - cartMu * cartXDot) / totalMass;
 
@@ -63,11 +66,18 @@ public class InvertedPendulum : MonoBehaviour {
 		poleThetaDot = poleThetaDot + delta * poleThetaDotDot;
 		poleTheta = poleTheta + delta * poleThetaDot;
 
+
 		pendulum.transform.Rotate (0, delta * poleThetaDot * Mathf.Rad2Deg, 0);
 		cart.transform.Translate (delta * cartXDot, 0, 0);
+		wheel1.transform.Rotate (0, delta * -cartXDot * Mathf.Rad2Deg * 5, 0);
+		wheel2.transform.Rotate (0, delta * -cartXDot * Mathf.Rad2Deg * 5, 0);
 	}
 
 	public void SetForce(float f) {
+		if (f > 200f)
+			f = 200f;
+		if (f < -200f)
+			f = -200f;
 		cartForce = f;
 	}
 

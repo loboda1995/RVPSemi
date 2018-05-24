@@ -44,15 +44,15 @@ public class GraphForce : MonoBehaviour {
 		}
 
 		float value = pendulum.cartForce;
-		if (value > 150)
-			value = 150;
-		if (value < -150)
-			value = -150;
+		if (value > 200)
+			value = 200;
+		if (value < -200)
+			value = -200;
 		if (posX < 399) {
 			posX++;
 			line.positionCount = posX;
 		}
-		line.SetPosition (posX-1, new Vector3 (posX * 0.85f - 158, value * 0.46f + 5, -1));
+		line.SetPosition (posX-1, new Vector3 (posX * 0.85f - 158, value * 0.35f + 5, -1));
 
 	}
 }

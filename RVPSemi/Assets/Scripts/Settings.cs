@@ -19,10 +19,10 @@ public class Settings : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		poleLength = 1.0f;
-		poleWeight = 1.0f;
-		cartWeight = 2.0f;
-		startTheta = 20.0f;
+		poleLength = 2.0f;
+		poleWeight = 0.5f;
+		cartWeight = 5.0f;
+		startTheta = 180.0f;
 
 		pendulum.SetPoleLength (poleLength);
 		pendulum.SetPoleWeight (poleWeight);

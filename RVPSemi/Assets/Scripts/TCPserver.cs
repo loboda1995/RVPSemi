@@ -40,6 +40,11 @@ public class TCPserver : MonoBehaviour {
 
 	}  	
 
+	private bool sendReset = false;
+	public void SendReset() {
+		sendReset = true;
+	}
+
 	/// <summary> 	
 	/// Runs in background TcpServerThread; Handles incomming TcpClient requests 	
 	/// </summary> 	
@@ -77,6 +82,8 @@ public class TCPserver : MonoBehaviour {
 	/// </summary> 	
 
 	private byte[] serverMessageAsByteArray;
+	private string serverMessage;
+	private float e;
 	private void SendMessage() { 		
 		if (connectedTcpClient == null) {             
 			return;         
@@ -85,14 +92,20 @@ public class TCPserver : MonoBehaviour {
 		try { 			
 			// Get a stream object for writing. 			
 			NetworkStream stream = connectedTcpClient.GetStream(); 			
-			if (stream.CanWrite) {         
-				float e = pendulum.pendulum.transform.localEulerAngles.y;
-				if (e > 180f)
-					e = e - 360f;
-				e = e * Mathf.Deg2Rad;
-				string serverMessage = String.Format("{0};", e); 			
+			if (stream.CanWrite) {       
+				if(sendReset){
+					serverMessage = "RESET;";
+					sendReset = false;
+				}else{
+					e = pendulum.pendulum.transform.localEulerAngles.y;
+					if (e > 180f)
+						e = e - 360f;
+					e = e * Mathf.Deg2Rad;
+					serverMessage = String.Format("{0};", e); 			
+									
+				}
 				// Convert string message to byte array.                 
-				serverMessageAsByteArray = Encoding.ASCII.GetBytes(serverMessage); 				
+				serverMessageAsByteArray = Encoding.ASCII.GetBytes(serverMessage); 
 				// Write byte array to socketConnection stream.               
 				stream.Write(serverMessageAsByteArray, 0, serverMessageAsByteArray.Length);               
 				stream.Flush();

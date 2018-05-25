@@ -14,6 +14,8 @@ public class InvertedPendulum : MonoBehaviour {
 	public GameObject weightPos;
 	public GameObject weight;
 
+	public TCPserver server;
+
 	float poleLength;
 	public float poleTheta;
 	float poleThetaDot = 0f;
@@ -45,7 +47,8 @@ public class InvertedPendulum : MonoBehaviour {
 		cart.transform.position = new Vector3(cartX, cart.transform.position.y, cart.transform.position.z);
 		rod.transform.localScale = new Vector3 (1, 1, poleLength);
 		weight.transform.position = weightPos.transform.position;
-		weight.transform.localScale = new Vector3 (Mathf.Sqrt(pendulumMass), Mathf.Sqrt(pendulumMass), Mathf.Sqrt(pendulumMass));
+		weight.transform.localScale = new Vector3 (Mathf.Sqrt (pendulumMass), Mathf.Sqrt (pendulumMass), Mathf.Sqrt (pendulumMass));
+
 	}
 
 	// Update is called once per frame
@@ -114,5 +117,7 @@ public class InvertedPendulum : MonoBehaviour {
 		poleThetaDot = 0f;
 		poleThetaDotDot = 0f;
 		cartForce = 0f;
+
+		server.SendReset ();
 	}
 }

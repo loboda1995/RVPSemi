@@ -56,6 +56,7 @@
      <Compile Include="Assets\Scripts\Graphs.cs" />
      <Compile Include="Assets\Scripts\GraphTheta.cs" />
      <Compile Include="Assets\Scripts\InvertedPendulum.cs" />
+     <Compile Include="Assets\Scripts\RailEnd.cs" />
      <Compile Include="Assets\Scripts\Settings.cs" />
      <Compile Include="Assets\Scripts\TCPserver.cs" />
  <Reference Include="UnityEngine.UI">

@@ -24,29 +24,33 @@ public class TCPClient {
 
         while((read = is.read(buffer)) != -1) {
             output = new String(buffer, 0, read);
-            e = Float.parseFloat(output.split(";")[0]); // angle
-            t = System.currentTimeMillis();
-            dt = (t - t_old);
-            de = e - e_old;
+            if(output.contains("RESET;")) {
+                integral = 0;
+            }else {
+                e = Float.parseFloat(output.split(";")[0]); // angle
+                t = System.currentTimeMillis();
+                dt = (t - t_old);
+                de = e - e_old;
 
-            integral += (e * dt);
-            if(integral > 50)
-                integral = 50;
-            if(integral < -50)
-                integral = -50;
+                integral += (e * dt);
+                if (integral > 50)
+                    integral = 50;
+                if (integral < -50)
+                    integral = -50;
 
-            P = Kp * e;
-            I = Ki * integral;
-            D = Kd * (de / dt);
-            u = P + I + D;
+                P = Kp * e;
+                I = Ki * integral;
+                D = Kd * (de / dt);
+                u = P + I + D;
 
-            if(!Double.isNaN(u)) {
-                pw.printf("%f", u);
-                pw.flush();
+                if (!Double.isNaN(u)) {
+                    pw.printf("%f", u);
+                    pw.flush();
+                }
+
+                t_old = t;
+                e_old = e;
             }
-
-            t_old = t;
-            e_old = e;
         }
         clientSocket.close();
     }

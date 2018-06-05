@@ -9,21 +9,12 @@ using UnityEngine;
 
 public class TCPserver : MonoBehaviour {  	
 	public InvertedPendulum pendulum;
-	#region private members 	
-	/// <summary> 	
-	/// TCPListener to listen for incomming TCP connection 	
-	/// requests. 	
-	/// </summary> 	
 	private TcpListener tcpListener; 
-	/// <summary> 
-	/// Background thread for TcpServer workload. 	
-	/// </summary> 	
 	private Thread tcpListenerThread;  	
-	/// <summary> 	
-	/// Create handle to connected tcp client. 	
-	/// </summary> 	
 	private TcpClient connectedTcpClient; 	
-	#endregion 	
+	private NetworkStream stream;
+	public GameObject clientOn;
+	public GameObject clientOff;
 
 	// Use this for initialization
 	void Start () { 		
@@ -37,7 +28,8 @@ public class TCPserver : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () { 		
-
+		clientOn.SetActive (connectedTcpClient != null);
+		clientOff.SetActive (connectedTcpClient == null);
 	}  	
 
 	private bool sendReset = false;
@@ -55,27 +47,32 @@ public class TCPserver : MonoBehaviour {
 			tcpListener.Start();              
 			Debug.Log("Server is listening");              
 			Byte[] bytes = new Byte[64];  			
-			while (true) { 				
+			while (true) { 	
 				using (connectedTcpClient = tcpListener.AcceptTcpClient()) { 					
-					// Get a stream object for reading 					
-					using (NetworkStream stream = connectedTcpClient.GetStream()) { 						
-						int length; 						
-						// Read incomming stream into byte arrary. 						
-						while ((length = stream.Read(bytes, 0, bytes.Length)) != 0) { 							
-							var incommingData = new byte[length]; 							
-							Array.Copy(bytes, 0, incommingData, 0, length);  							
-							// Convert byte array to string message. 							
-							string clientMessage = Encoding.ASCII.GetString(incommingData); 	
-							float command = float.Parse(clientMessage);
-							pendulum.SetForce(command);
-						} 					
-					} 				
-				} 			
-			} 		
+					// Get a stream object for reading 		
+					using (stream = connectedTcpClient.GetStream()) { 
+						int length; 
+						// Read incomming stream into byte arrary. 	
+						try{
+							while ((length = stream.Read(bytes, 0, bytes.Length)) != 0) { 							
+								var incommingData = new byte[length]; 							
+								Array.Copy(bytes, 0, incommingData, 0, length);  							
+								// Convert byte array to string message. 							
+								string clientMessage = Encoding.ASCII.GetString(incommingData); 	
+								float command = float.Parse(clientMessage);
+								pendulum.SetForce(command);
+							} 
+						}
+						catch (Exception e){
+							stream.Close();
+						}
+					} 
+				} 
+			} 	
 		} 		
 		catch (SocketException socketException) { 			
 			Debug.Log("SocketException " + socketException.ToString()); 		
-		}     
+		}
 	}  	
 	/// <summary> 	
 	/// Send message to client using socket connection. 	
@@ -91,7 +88,8 @@ public class TCPserver : MonoBehaviour {
 
 		try { 			
 			// Get a stream object for writing. 			
-			NetworkStream stream = connectedTcpClient.GetStream(); 			
+			NetworkStream stream = connectedTcpClient.GetStream(); 	
+
 			if (stream.CanWrite) {
 				if(sendReset){
 					serverMessage = "RESET;";
@@ -113,6 +111,11 @@ public class TCPserver : MonoBehaviour {
 		} 		
 		catch (SocketException socketException) {             
 			Debug.Log("Socket exception: " + socketException);         
-		} 	
+		} 
+		catch (ObjectDisposedException e){
+			connectedTcpClient.Close ();
+			connectedTcpClient = null;
+			pendulum.SetForce(0);
+		}	
 	} 
 }

@@ -52,7 +52,7 @@ public class InvertedPendulum : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update () {
+	public void Update () {
 		float delta = Time.deltaTime;
 
 		float cosTheta = Mathf.Cos(poleTheta);
@@ -77,10 +77,10 @@ public class InvertedPendulum : MonoBehaviour {
 	}
 
 	public void SetForce(float f) {
-		if (f > 200f)
-			f = 200f;
-		if (f < -200f)
-			f = -200f;
+		if (f > 2000f)
+			f = 2000f;
+		if (f < -2000f)
+			f = -2000f;
 		cartForce = f;
 	}
 

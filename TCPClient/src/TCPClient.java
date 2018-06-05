@@ -12,43 +12,51 @@ public class TCPClient {
         int read;
 
         float e_old = 0;
-        double t_old = System.currentTimeMillis();
         float integral = 0;
 
-        float Kp = 35f;
-        float Ki = 0.7f;
-        float Kd = 15.0f;
-        double u, D, t, dt;
+        float Kp, Ki, Kd;
+        double u, D;
         float P, I, e, de;
         String output;
 
+        // konstanten čas
+        double dt = 0.02;
         while((read = is.read(buffer)) != -1) {
             output = new String(buffer, 0, read);
             if(output.contains("RESET;")) {
                 integral = 0;
+                e_old = 0;
             }else {
                 e = Float.parseFloat(output.split(";")[0]); // angle
-                t = System.currentTimeMillis();
-                dt = (t - t_old);
                 de = e - e_old;
 
+                if(Math.abs(e) < 1.2){
+                    Kp = 12f;
+                    Ki = 3.0f;
+                    Kd = 0.55f;
+                }else{
+                    Kp = 0.4f;
+                    Ki = 1.8f;
+                    Kd = 0.0f;
+                }
+
                 integral += (e * dt);
-                if (integral > 50)
-                    integral = 50;
-                if (integral < -50)
-                    integral = -50;
+                if (integral > 150)
+                    integral = 150;
+                if (integral < -150)
+                    integral = -150;
 
                 P = Kp * e;
                 I = Ki * integral;
                 D = Kd * (de / dt);
                 u = P + I + D;
 
-                if (!Double.isNaN(u)) {
-                    pw.printf("%f", u);
-                    pw.flush();
-                }
+                // ojačanje
+                u *= 10;
 
-                t_old = t;
+                pw.printf("%f", u);
+                pw.flush();
+
                 e_old = e;
             }
         }

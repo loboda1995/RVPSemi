@@ -32,7 +32,7 @@ public class TCPserver : MonoBehaviour {
 		tcpListenerThread.IsBackground = true; 		
 		tcpListenerThread.Start(); 	
 
-		InvokeRepeating("SendMessage", 1.0f, 0.01f);
+		InvokeRepeating("SendMessage", 1.0f, 0.02f);
 	}  	
 
 	// Update is called once per frame
@@ -92,7 +92,7 @@ public class TCPserver : MonoBehaviour {
 		try { 			
 			// Get a stream object for writing. 			
 			NetworkStream stream = connectedTcpClient.GetStream(); 			
-			if (stream.CanWrite) {       
+			if (stream.CanWrite) {
 				if(sendReset){
 					serverMessage = "RESET;";
 					sendReset = false;

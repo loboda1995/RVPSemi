@@ -5,7 +5,8 @@ using System.Net;
 using System.Net.Sockets; 
 using System.Text; 
 using System.Threading; 
-using UnityEngine;  
+using UnityEngine;
+using UnityEngine.UI;  
 
 public class TCPserver : MonoBehaviour {  	
 	public InvertedPendulum pendulum;
@@ -118,4 +119,11 @@ public class TCPserver : MonoBehaviour {
 			pendulum.SetForce(0);
 		}	
 	} 
+
+	public void ExitSimulator() {
+		if(connectedTcpClient != null){
+			connectedTcpClient.Close();
+		}
+		Application.Quit();
+	}
 }

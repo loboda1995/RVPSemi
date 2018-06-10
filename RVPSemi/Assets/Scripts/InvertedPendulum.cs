@@ -72,8 +72,8 @@ public class InvertedPendulum : MonoBehaviour {
 
 		pendulum.transform.Rotate (0, delta * poleThetaDot * Mathf.Rad2Deg, 0);
 		cart.transform.Translate (delta * cartXDot, 0, 0);
-		wheel1.transform.Rotate (0, delta * -cartXDot * Mathf.Rad2Deg * 5, 0);
-		wheel2.transform.Rotate (0, delta * -cartXDot * Mathf.Rad2Deg * 5, 0);
+		wheel1.transform.Rotate (0, delta * -cartXDot * Mathf.Rad2Deg * 1.5f, 0);
+		wheel2.transform.Rotate (0, delta * -cartXDot * Mathf.Rad2Deg * 1.5f, 0);
 	}
 
 	public void SetForce(float f) {
@@ -86,14 +86,20 @@ public class InvertedPendulum : MonoBehaviour {
 
 	public void SetPoleLength(float l) {
 		startPoleLength = l;
+		poleLength = startPoleLength;
+		rod.transform.localScale = new Vector3 (1, 1, poleLength);
+		weight.transform.position = weightPos.transform.position;
 	}
 
 	public void SetPoleWeight(float w) {
 		startPoleWeight = w;
+		pendulumMass = startPoleWeight;
+		weight.transform.localScale = new Vector3 (Mathf.Sqrt(pendulumMass), Mathf.Sqrt(pendulumMass), Mathf.Sqrt(pendulumMass));
 	}
 
 	public void SetCartWeight(float w) {
 		startCartWeight = w;
+		cartMass = startCartWeight;
 	}
 
 	public void SetStartTheta(float t) {

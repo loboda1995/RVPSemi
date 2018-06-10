@@ -10,6 +10,8 @@ public class Settings : MonoBehaviour {
 	public InputField inputCartWeight;
 	public InputField inputTheta;
 
+	public Camera camera;
+
 	public InvertedPendulum pendulum;
 
 	float poleLength;
@@ -42,25 +44,27 @@ public class Settings : MonoBehaviour {
 	}
 
 	public void UpdatePoleLength() {
+		float old = poleLength;
 		poleLength = float.Parse (inputPoleLength.text);
-		if (poleLength < 0.1f || poleLength > 4.0f)
-			poleLength = 1.0f;
+		if (poleLength < 0.1f || poleLength > 6.0f)
+			poleLength = 2.0f;
 		pendulum.SetPoleLength (poleLength);
+		camera.transform.Translate (new Vector3 (0,  0, (old - poleLength)*2.0f));
 		inputPoleLength.text = string.Format ("{0:0.00}", poleLength);
 	}
 
 	public void UpdatePoleWeight() {
 		poleWeight = float.Parse (inputPoleWeight.text);
-		if (poleWeight < 0.5f || poleWeight > 10.0f)
-			poleWeight = 1.0f;
+		if (poleWeight < 0.5f || poleWeight > 20.0f)
+			poleWeight = 0.5f;
 		pendulum.SetPoleWeight (poleWeight);
 		inputPoleWeight.text = string.Format ("{0:0.00}", poleWeight);
 	}
 
 	public void UpdateCartWeight() {
 		cartWeight = float.Parse (inputCartWeight.text);
-		if (cartWeight < 0.5f || cartWeight > 10.0f)
-			cartWeight = 2.0f;
+		if (cartWeight < 0.5f || cartWeight > 20.0f)
+			cartWeight = 5.0f;
 		pendulum.SetCartWeight (cartWeight);
 		inputCartWeight.text = string.Format ("{0:0.00}", cartWeight);
 	}
